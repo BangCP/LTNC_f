@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import { ref, child, get } from "firebase/database";
 import { database } from '../firebase'
 
-function DriversManagement({ DriverIdPass }) {
+function DriversManagement() {
     const [drivers, setData] = useState([]);
     const [selectedDriverId, setSelectedDriverId] = useState(null);
     const [showAllDrivers, setShowAllDrivers] = useState(false);
@@ -30,7 +30,6 @@ function DriversManagement({ DriverIdPass }) {
     //FUNCTION
     const toggleShowInfo = (driverId) => {
       setSelectedDriverId(driverId === selectedDriverId ? null : driverId);
-      DriverIdPass(selectedDriverId !== driverId ? driverId : null)
     };
   
     const handleShowAllDrivers = () => {

@@ -9,7 +9,6 @@ function Actions({ Vehicleid, Planid, TripNextId }) {
   const [confirmClicked, setConfirmClicked] = useState(false);
   const [text, setText] = useState('Maintenance vehicle?');
   const [vehicle, setVehicle] = useState({});
-  const [driver, setDriver] = useState({});
   const [trip, setTrip] = useState({});
   const [listDriver, setListDriver] = useState([]);
   const [newTrip, setNewTrip] = useState({
@@ -210,8 +209,16 @@ function Actions({ Vehicleid, Planid, TripNextId }) {
   };
 
   //DELETE PLAN BUTTON
-  const deletePlan = (IdOfPlan) => {
+  const deletePlan = async (IdOfPlan) => {
     if (IdOfPlan === null) return;
+    
+    const tripSnapshot = await get(child(dbRef, `/plans/${IdOfPlan}`));
+    const tripData = tripSnapshot.val();
+    if (tripData.status === 'In progress') {
+      alert('Can\'delete because plan is in progress');
+      return;
+    }
+    
     const path = ref(database, `/plans/${IdOfPlan}`);
     remove(path)
       .then(() => {
@@ -262,7 +269,6 @@ function Actions({ Vehicleid, Planid, TripNextId }) {
     await update(DriverPath, driverData);
     await update(ref(database, `/plans/${IdOfPlan}`), tripData);
 
-    setDriver({});
     setTrip({});
     setVehicle({});
   };
@@ -297,7 +303,6 @@ function Actions({ Vehicleid, Planid, TripNextId }) {
     await update(DriverPath, driverData);
     await update(ref(database, `/plans/${IdOfPlan}`), tripData);
 
-    setDriver({});
     setTrip({});
     setVehicle({});
   };
