@@ -1,1 +1,1 @@
-# LTNC_f
+npm install firebase
