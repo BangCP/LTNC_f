@@ -7,7 +7,17 @@ function DriversManagement({ fetchDrivers, setFetchDrivers }) {
   const [drivers, setData] = useState([]);
   const [selectedDriverId, setSelectedDriverId] = useState(null);
   const [showAllDrivers, setShowAllDrivers] = useState(false);
+  //search
   const [searchTerm, setSearchTerm] = useState('');
+  //filter
+  const [ageFilter, setAgeFilter] = useState('');
+  const [licenseFilter, setLicenseFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  //filter age
+  const [minAgeFilter, setMinAgeFilter] = useState('');
+  const [maxAgeFilter, setMaxAgeFilter] = useState('');
+  //filter license
+  const [selectedLicenseType, setSelectedLicenseType] = useState('');
 
   // GET DATA
   useEffect(() => {
@@ -40,6 +50,30 @@ function DriversManagement({ fetchDrivers, setFetchDrivers }) {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
+
+  const handleAgeFilterChange = (event) => {
+    setAgeFilter(event.target.value);
+  };
+
+  const handleLicenseFilterChange = (event) => {
+    setLicenseFilter(event.target.value);
+  };
+
+  const handleStatusFilterChange = (event) => {
+    setStatusFilter(event.target.value);
+  };
+
+  const handleMinAgeFilterChange = (event) => {
+    setMinAgeFilter(event.target.value);
+  };
+  const handleMaxAgeFilterChange = (event) => {
+    setMaxAgeFilter(event.target.value);
+  };
+  const handleLicenseTypeChange = (event) => {
+    setSelectedLicenseType(event.target.value);
+  };
+  
+
 /*background-image: linear-gradient(to top, #9890e3 0%, #b1f4cf 100%);*/
   const showAllBtnStyle = {
     background: showAllDrivers
@@ -71,6 +105,42 @@ function DriversManagement({ fetchDrivers, setFetchDrivers }) {
             placeholder="🔎 Search for driver..."
             className="searchInput"
           />
+          <div className='ageFilter' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '95%', margin: '0 auto' }}>
+            <input
+              type='number'
+              value={minAgeFilter}
+              onChange={handleMinAgeFilterChange}
+              placeholder="Min Age"
+              className="searchInput"
+            />
+            <input
+              type='number'
+              value={maxAgeFilter}
+              onChange={handleMaxAgeFilterChange}
+              placeholder="Max Age"
+              className="searchInput"
+            />
+          </div>
+            
+            <select
+              value={selectedLicenseType}
+              onChange={handleLicenseTypeChange}
+              className="searchInput"
+            >
+              <option value="">License Type: All</option>
+              <option value="A">License Type: A</option>
+              <option value="B">License Type: B</option>
+              <option value="C">License Type: C</option>
+            </select>
+          <select
+            value={statusFilter}
+            onChange={handleStatusFilterChange}
+            className="searchInput"
+          >
+            <option value="">Status: All</option>
+            <option value="Ready">Status: Ready</option>
+            <option value="Not ready">Status: Not ready</option>
+          </select>
         </h3>
         <Button
           className="showAllBtn"
@@ -80,9 +150,14 @@ function DriversManagement({ fetchDrivers, setFetchDrivers }) {
           {showAllDrivers ? "Hide all driver's information" : "Show all driver's information"}
         </Button>
         {drivers
-          .filter((driver) =>
-            driver.name.toLowerCase().includes(searchTerm.toLowerCase())
-          )
+              .filter((driver) =>
+              driver.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+              (!minAgeFilter || driver.age >= parseInt(minAgeFilter)) && // Filter by minimum age
+              (!maxAgeFilter || driver.age <= parseInt(maxAgeFilter)) && // Filter by maximum age
+              (!licenseFilter || driver.licenseType === licenseFilter) &&
+              (!statusFilter || driver.status === statusFilter) && // Filter by status
+              (!selectedLicenseType || driver.licenseType === selectedLicenseType) // Filter by license type
+            )
           .map((driver) => (
             /* Màu cho DriverUnit //status 
             background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
