@@ -7,6 +7,8 @@ function VehiclesManagement({ setVehicleId, fetchVehicles, setFetchVehicles }) {
   const [vehicles, setData] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showAllVehicles, setShowAllVehicles] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  
 
   //GET DATA
   useEffect(() => {
@@ -33,16 +35,20 @@ function VehiclesManagement({ setVehicleId, fetchVehicles, setFetchVehicles }) {
     setShowAllVehicles(!showAllVehicles);
   };
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   const showAllBtnStyle = {
     background: showAllVehicles 
-      ? 'linear-gradient(to left, #FFFF00, #FFFFFF)' 
-      : 'linear-gradient(to left, #FFFFFF, #FFFF00)',
+      ? 'linear-gradient(to right, #9890e3 0%, #b1f4cf 100%)'
+      : 'linear-gradient(to left, #9890e3 0%, #b1f4cf 100%)',
     color: 'black',
     fontWeight: 'bold',
     border: 'none',
-    borderRadius: '20px',
-    maxWidth: '97%',
-    fontSize: '12px',
+    borderRadius: '10px',
+    maxWidth: '98%',
+    fontSize: '1px',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
     padding: '5px 10px',
@@ -55,29 +61,44 @@ function VehiclesManagement({ setVehicleId, fetchVehicles, setFetchVehicles }) {
     setVehicleId(selectedVehicle !== vehicleId ? vehicleId : null);
   };
 
+
+
   return (
     <div>
       <h2 className='VehicleManagement'>Vehicle Management</h2>
       <div>
-        <h3 className="vl">Vehicles List</h3>
+        <h3 className="vl">
+          Vehicles List
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="🔎 Search for vehicle..."
+            className="searchInput"
+          />
+          </h3>
         <Button
           onClick={handleShowAllVehicles}
           style={showAllBtnStyle}
         >
           {showAllVehicles ? "Hide all vehicle's information" : "Show all vehicle's information"}
         </Button>
-        {vehicles.map((vehicle) => (
+        {vehicles
+          .filter((vehicle) =>
+            vehicle.name.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        .map((vehicle) => (
           <button
             className={`VehicleUnit ${selectedVehicle === vehicle.id || showAllVehicles ? 'expanded' : ''}`}
             key={vehicle.id}
 
             style={
               vehicle.status === 'Working'
-                ? { background: 'linear-gradient(to right, lightcoral, red)' }
+                ? { background: 'linear-gradient(to top, #c1dfc4 0%, #deecdd 100%)' }
                 : vehicle.status === 'Maintenance'
-                ? { background: 'linear-gradient(to right, grey, darkgrey)' }
+                ? { background: 'linear-gradient(to right, #868f96 0%, #596164 100%)' }
                 : vehicle.status === 'Inactive'
-                ? { background: 'linear-gradient(to right, #70E2FF, #0072FF)' }
+                ? { background: 'linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)' }
                 : {}
             }
 
