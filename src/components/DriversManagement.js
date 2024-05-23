@@ -1,37 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
-import { collection, getDocs } from 'firebase/firestore';
-import { firebase } from '../firebase';
+import React, { useState, useEffect } from "react";
+import Button from "@mui/material/Button";
+import { collection, getDocs } from "firebase/firestore";
+import { firebase } from "../firebase";
 
 function DriversManagement({ fetchDrivers, setFetchDrivers }) {
   const [drivers, setData] = useState([]);
   const [selectedDriverId, setSelectedDriverId] = useState(null);
   const [showAllDrivers, setShowAllDrivers] = useState(false);
+  const [showSreach, setShowSreach] = useState(false);
   //search
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   //filter
-  const [ageFilter, setAgeFilter] = useState('');
-  const [licenseFilter, setLicenseFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [ageFilter, setAgeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   //filter age
-  const [minAgeFilter, setMinAgeFilter] = useState('');
-  const [maxAgeFilter, setMaxAgeFilter] = useState('');
+  const [minAgeFilter, setMinAgeFilter] = useState("");
+  const [maxAgeFilter, setMaxAgeFilter] = useState("");
   //filter license
-  const [selectedLicenseType, setSelectedLicenseType] = useState('');
+  const [selectedLicenseType, setSelectedLicenseType] = useState("");
+  //notification
+  const [showNotification, setShowNotification] = useState(false);
+  const [message, setMessage] = useState("");
 
   // GET DATA
   useEffect(() => {
     if (fetchDrivers) {
       const fetchData = async () => {
         try {
-          const querySnapshot = await getDocs(collection(firebase, 'drivers'));
+          const querySnapshot = await getDocs(collection(firebase, "drivers"));
           const todoData = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }));
           setData(todoData);
         } catch (error) {
-          console.error('Error fetching data:', error);
+          console.error("Error fetching data:", error);
         }
       };
       fetchData();
@@ -43,123 +46,286 @@ function DriversManagement({ fetchDrivers, setFetchDrivers }) {
     setSelectedDriverId((prevId) => (prevId === driverId ? null : driverId));
   };
 
-  const handleShowAllDrivers = () => {
-    setShowAllDrivers((prevState) => !prevState);
+  const handleAgeFilterChange = (e) => {
+    setAgeFilter(e.target.value);
   };
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleAgeFilterChange = (event) => {
-    setAgeFilter(event.target.value);
-  };
-
-  const handleLicenseFilterChange = (event) => {
-    setLicenseFilter(event.target.value);
-  };
-
-  const handleStatusFilterChange = (event) => {
-    setStatusFilter(event.target.value);
-  };
-
-  const handleMinAgeFilterChange = (event) => {
-    setMinAgeFilter(event.target.value);
-  };
-  const handleMaxAgeFilterChange = (event) => {
-    setMaxAgeFilter(event.target.value);
-  };
-  const handleLicenseTypeChange = (event) => {
-    setSelectedLicenseType(event.target.value);
-  };
-  
-
-/*background-image: linear-gradient(to top, #9890e3 0%, #b1f4cf 100%);*/
+  /*background-image: linear-gradient(to top, #9890e3 0%, #b1f4cf 100%);*/
   const showAllBtnStyle = {
     background: showAllDrivers
-      ? 'linear-gradient(to right, #9890e3 0%, #b1f4cf 100%)'
-      : 'linear-gradient(to left, #9890e3 0%, #b1f4cf 100%)',
-    color: 'black',
-    fontWeight: 'bold',
-    border: 'none',
-    borderRadius: '10px',
-    maxWidth: '98%',
-    fontSize: '12px',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    padding: '5px 10px',
-    boxShadow: '0px 8px 15px rgba(0, 0, 0, 0.1)',
-    whiteSpace: 'nowrap',
+      ? "linear-gradient(to right, #9890e3 0%, #b1f4cf 100%)"
+      : "linear-gradient(to left, #9890e3 0%, #b1f4cf 100%)",
+    color: "black",
+    fontWeight: "bold",
+    border: "none",
+    borderRadius: "10px",
+    maxWidth: "98%",
+    fontSize: "12px",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    padding: "5px 10px",
+    boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)",
+    whiteSpace: "nowrap",
   };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setAgeFilter("");
+    setStatusFilter("");
+    setMinAgeFilter("");
+    setMaxAgeFilter("");
+    setSelectedLicenseType("");
+  };
+
+  let driverHistory = [
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$94243232320",
+      estimatedTime: "1322 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Complet323ed",
+      vehicle: "Car Truckkk3232kkkkk",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+    {
+      STT: 1,
+      departureTime: "08:45",
+      driver: "John Doe",
+      driverId: "0crghHNSW7DwaUGrQKWj",
+      estimatedCost: "$90",
+      estimatedTime: "12 hours",
+      id: "1i6RM79jYQ5UaKokIivo",
+      route: "LT-PH",
+      status: "Completed",
+      vehicle: "Car",
+      vehicleId: "0oIrPgti3MDFMH86Sgz3",
+    },
+  ];
 
   return (
     <div>
       <h2 className="DriverManagement">Driver Management</h2>
-      <div>
+      <div className="Block">
         <h3 className="dl">
-          Drivers List
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleSearch}
-            placeholder="🔎 Search for driver..."
-            className="searchInput"
-          />
-          <div className='ageFilter' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '95%', margin: '0 auto' }}>
-            <input
-              type='number'
-              value={minAgeFilter}
-              onChange={handleMinAgeFilterChange}
-              placeholder="Min Age"
-              className="searchInput"
-            />
-            <input
-              type='number'
-              value={maxAgeFilter}
-              onChange={handleMaxAgeFilterChange}
-              placeholder="Max Age"
-              className="searchInput"
-            />
-          </div>
-            
-            <select
-              value={selectedLicenseType}
-              onChange={handleLicenseTypeChange}
-              className="searchInput"
-            >
-              <option value="">License Type: All</option>
-              <option value="A">License Type: A</option>
-              <option value="B">License Type: B</option>
-              <option value="C">License Type: C</option>
-            </select>
-          <select
-            value={statusFilter}
-            onChange={handleStatusFilterChange}
-            className="searchInput"
+          {" "}
+          <button
+            className="magnifier"
+            onClick={() => setShowSreach(!showSreach)}
           >
-            <option value="">Status: All</option>
-            <option value="Ready">Status: Ready</option>
-            <option value="Not ready">Status: Not ready</option>
-          </select>
+            🧑‍✈️🔎
+          </button>
+          {showSreach && (
+            <div>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="🔎 Search for driver..."
+                className="searchInput"
+              />
+              <div
+                className="ageFilter"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "95%",
+                  margin: "0 auto",
+                }}
+              >
+                <input
+                  type="number"
+                  value={minAgeFilter}
+                  onChange={(e) => setMinAgeFilter(e.target.value)}
+                  placeholder="Min Age"
+                  className="searchInput"
+                />
+                <input
+                  type="number"
+                  value={maxAgeFilter}
+                  onChange={(e) => setMaxAgeFilter(e.target.value)}
+                  placeholder="Max Age"
+                  className="searchInput"
+                />
+              </div>
+              <select
+                value={selectedLicenseType}
+                onChange={(e) => setSelectedLicenseType(e.target.value)}
+                className="searchInput"
+              >
+                <option value="">License Type: All</option>
+                <option value="A">License Type: A</option>
+                <option value="B">License Type: B</option>
+                <option value="C">License Type: C</option>
+              </select>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="searchInput"
+              >
+                <option value="">Status: All</option>
+                <option value="Ready">Status: Ready</option>
+                <option value="Not ready">Status: Not ready</option>
+              </select>
+              <button className="clear-filter2" onClick={() => clearFilters()}>
+                Clear filter
+              </button>
+            </div>
+          )}
         </h3>
         <Button
-          className="showAllBtn"
-          onClick={handleShowAllDrivers}
+          onClick={() => setShowAllDrivers(!showAllDrivers)}
           style={showAllBtnStyle}
         >
-          {showAllDrivers ? "Hide all driver's information" : "Show all driver's information"}
+          {showAllDrivers
+            ? "Hide all driver's information"
+            : "Show all driver's information"}
         </Button>
         {drivers
-              .filter((driver) =>
+          .filter(
+            (driver) =>
               driver.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
               (!minAgeFilter || driver.age >= parseInt(minAgeFilter)) && // Filter by minimum age
               (!maxAgeFilter || driver.age <= parseInt(maxAgeFilter)) && // Filter by maximum age
-              (!licenseFilter || driver.licenseType === licenseFilter) &&
               (!statusFilter || driver.status === statusFilter) && // Filter by status
-              (!selectedLicenseType || driver.licenseType === selectedLicenseType) // Filter by license type
-            )
-          .map((driver) => (
-            /* Màu cho DriverUnit //status 
+              (!selectedLicenseType ||
+                driver.licenseType === selectedLicenseType) // Filter by license type
+          )
+          /* Màu cho DriverUnit //status 
             background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
             background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
             background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
@@ -171,62 +337,138 @@ function DriversManagement({ fetchDrivers, setFetchDrivers }) {
             background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
             background-image: linear-gradient(to top, #c1dfc4 0%, #deecdd 100%);
             background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
-background-blend-mode: multiply,multiply;
+          background-blend-mode: multiply,multiply;
             background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
             */
+
+          .map((driver) => (
             <button
               className={`DriverUnit ${
-                selectedDriverId === driver.id || showAllDrivers ? 'expanded' : ''
+                selectedDriverId === driver.id || showAllDrivers
+                  ? "expanded"
+                  : ""
               }`}
               key={driver.id}
               style={
-                driver.status === 'Ready'
-                  ? { background: 'linear-gradient(to top, #c1dfc4 0%, #deecdd 100%)' }
-                  : driver.status === 'Not ready'
-                  ? { background: 'linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)' }
+                driver.status === "Ready"
+                  ? {
+                      background:
+                        "linear-gradient(to top, #c1dfc4 0%, #deecdd 100%)",
+                    }
+                  : driver.status === "Not ready"
+                  ? {
+                      background:
+                        "linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)",
+                    }
                   : {}
               }
               onClick={() => toggleShowInfo(driver.id)}
             >
               <strong className="DriverName">{driver.name}</strong>
+              <br />
+              {driver.image ? (
+                <img
+                  src={driver.image}
+                  alt="Driver Image"
+                  style={{
+                    width: "150px",
+                    maxWidth: "100%",
+                    border: "2px solid black",
+                    borderRadius: "5px",
+                    display: "inline-block",
+                    marginRight: "auto",
+                  }}
+                />
+              ) : (
+                <img
+                  src="https://www.shutterstock.com/shutterstock/photos/535853263/display_1500/stock-vector-profile-photo-vector-placeholder-pic-male-person-default-profile-gray-photo-picture-avatar-image.jpg"
+                  alt="Default Profile"
+                  style={{
+                    width: "150px",
+                    maxWidth: "100%",
+                    border: "2px solid black",
+                    borderRadius: "5px",
+                    display: "inline-block",
+                    marginRight: "auto",
+                  }}
+                />
+              )}
               <ul className="DriverDetails">
-                <li>Age: {driver.age ? driver.age : 'unknown'}</li>
-                <li>License Type: {driver.licenseType ? driver.licenseType : 'unknown'}</li>
-                <li>Phone: {driver.phone ? driver.phone : 'unknown'}</li>
-                <li>Address: {driver.address ? driver.address : 'unknown'}</li>
-                <li>Driving History: {driver.drivingHistory ? driver.drivingHistory : 'unknown'}</li>
+                <li>Age: {driver.age ? driver.age : "unknown"}</li>
+                <li>
+                  License Type:{" "}
+                  {driver.licenseType ? driver.licenseType : "unknown"}
+                </li>
+                <li>Phone: {driver.phone ? driver.phone : "unknown"}</li>
+                <li>Address: {driver.address ? driver.address : "unknown"}</li>
                 <li>Status: {driver.status}</li>
-                {driver.image ? (
-                  <img
-                    src={driver.image}
-                    alt="Driver Image"
-                    style={{
-                      width: '150px',
-                      maxWidth: '100%',
-                      border: '2px solid black',
-                      borderRadius: '5px',
-                      display: 'inline-block',
-                      marginRight: 'auto',
-                    }}
-                  />
-                ) : (
-                  <img
-                    src="https://www.shutterstock.com/shutterstock/photos/535853263/display_1500/stock-vector-profile-photo-vector-placeholder-pic-male-person-default-profile-gray-photo-picture-avatar-image.jpg"
-                    alt="Default Profile"
-                    style={{
-                      width: '150px',
-                      maxWidth: '100%',
-                      border: '2px solid black',
-                      borderRadius: '5px',
-                      display: 'inline-block',
-                      marginRight: 'auto',
-                    }}
-                  />
-                )}
+                <button
+                  id="HistoryButton"
+                  className="HistoryButton"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowNotification(true);
+                    setMessage("Driver's driving history is not available");
+                    //hàm này để in ra cái bảng showDrivingHistoryTable();
+                  }}
+                >
+                  Show driver's driving history
+                </button>
               </ul>
             </button>
           ))}
       </div>
+      {showNotification && (
+        <div className="DrivingHistoryPopup">
+          <div className="HistoryNotification">
+            <a
+              href="#"
+              class="x"
+              onClick={() => {
+                setShowNotification(false);
+              }}
+            ></a>
+            <div className="scrollable-div">
+              <table border="1">
+                <thead>
+                  <tr className="TripValueName">
+                    <th width="18%">Route</th>
+                    <th width="12%">Estimated Time</th>
+                    <th width="10%">Estimated Cost</th>
+                    <th width="10%">Departure Time</th>
+                    <th width="19%">Driver</th>
+                    <th width="19%">Vehicle</th>
+                    <th width="12%">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="tbd">
+                  {driverHistory.map((trip) => (
+                    <tr
+                      className={"tripTripUnit"}
+                      style={{ backgroundColor: "#42D691" }}
+                      key={trip.id}
+                    >
+                      <td className="tripRoute">{trip.route}</td>
+                      <td className="tripEstimatedTime">
+                        {trip.estimatedTime}
+                      </td>
+                      <td className="tripEstimatedCost">
+                        {trip.estimatedCost}
+                      </td>
+                      <td className="tripDepartureTime">
+                        {trip.departureTime}
+                      </td>
+                      <td className="tripDriver">{trip.driver}</td>
+                      <td className="tripVehicle">{trip.vehicle}</td>
+                      <td className="tripStatus">{trip.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
